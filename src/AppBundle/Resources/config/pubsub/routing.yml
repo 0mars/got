@@ -1,0 +1,15 @@
+game_o_three_topic:
+  channel: game/{id}
+  handler:
+      callback: 'game_o_three.topic'
+  requirements:
+    id:
+      pattern: "[a-zA-Z0-9]+"
+
+game_o_three_rpc:
+  channel: manager/{method}
+  handler:
+    callback: 'game_o_three.rpc'
+  requirements:
+          method:
+              pattern: "[a-z_A-Z]+"

@@ -1,0 +1,7 @@
+---
+- name: swap | copy swap_create file
+  sudo: yes
+  template: src=increase_swap.tpl dest=/tmp/increase_swap.sh owner=root group=root
+- name: SYS | Increase SWAP
+  sudo: yes
+  shell: "sh /tmp/increase_swap.sh"

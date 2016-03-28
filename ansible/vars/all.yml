@@ -1,0 +1,31 @@
+---
+server:
+    install: '1'
+    packages: [vim, git]
+    timezone: UTC
+    locale: en_US.UTF-8
+    swap_size: 1024 # in MB
+vagrant_local:
+    install: '1'
+    vm: { base_box: '', hostname: default, ip: 192.168.55.99, memory: '1024', sharedfolder: ./, syncType: nfs }
+nginx:
+    install: '1'
+    docroot: /vagrant/web
+    servername: game-o-three.dev
+mysql:
+    install: '1'
+    root_password: '123'
+    database: game_o_three
+    user: vagrant
+    password: vagrant
+    dump: ''
+php:
+    install: '1'
+    ppa: php5-5.6
+    packages: [php5-cli, php5-intl, php5-mcrypt, php5-mysql, php5-curl, php5-mongo]
+    pecl_packages: [mongo]
+
+composer:
+    install: '1'
+
+rabbitmq_version: 3.4.3

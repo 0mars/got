@@ -1,0 +1,8 @@
+---
+- name:
+  apt: pkg=daemon state=latest
+- name: ratchet | start socket server (logging to app/logs/socket.log)
+  remote_user: vagrant
+  command: daemon -o app/logs/socket.log --name=ratchet -- php app/console gos:websocket:server
+  args:
+    chdir: "{{ nginx.docroot }}/../"

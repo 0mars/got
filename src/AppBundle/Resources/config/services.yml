@@ -1,0 +1,23 @@
+services:
+    game_o_three.object_manager:
+      alias: doctrine_mongodb.odm.default_document_manager
+
+    game_o_three.topic_service:
+      class: AppBundle\Topic\GameOThreeTopic
+      arguments: [ "@game_o_three.service.game_manager" ]
+      tags:
+        - { name: gos_web_socket.topic }
+
+    game_o_three.rpc_service:
+      class: AppBundle\Rpc\GameOThreeRpc
+      arguments: ["@logger", "@game_o_three.service.game_manager", "@gos_web_socket.wamp.pusher"]
+      tags:
+        - { name: gos_web_socket.rpc }
+
+    game_o_three.repository.game:
+      class: GameOThree\Core\Repository\GameRepository
+      arguments: ["@game_o_three.object_manager"]
+
+    game_o_three.service.game_manager:
+      class: GameOThree\Core\Service\GameManager
+      arguments: [ "@game_o_three.repository.game"]

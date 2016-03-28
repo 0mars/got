@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    Game of Three.
+    {# client js #}
+    {{ ws_client() }}
+
+    <script type="text/javascript">
+        window.game = {
+            WS_URI: "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}",
+            channel: ""
+        };
+        window.game.websocket = WS.connect(window.game.WS_URI, {"max_retries": 0});
+        function displayNotification(message) {
+            $('#game-out').append("- "+message+"\n");
+        }
+        window.game.handleServerEvent = function(event)
+        {
+            console.log('event');
+            console.log(event);
+            switch (event.name) {
+                case 'winner':
+                        displayNotification("The winner is... *Drum Roll* Player "+ event.player);
+                    break;
+                case 'game_concluded':
+                    break;
+                case 'game_started':
+                    displayNotification("Game Started, Start Value: "+event.value);
+                    break;
+                case 'ack_start':case 'ack_continue':
+                        window.game.session.publish(window.game.channel,{"event": {name: "ack"}});
+                    break;
+                case 'display_turn_result':
+                    displayNotification("Player "+ event.player +": Input= "+event.input+", Result= "+ event.value);
+                    break;
+                case 'notification':
+                    displayNotification(event.message);
+            }
+        }
+
+        window.game.websocket.on("socket/connect", function (session){
+            window.game.session = session;
+            displayNotification("Connected to server");
+            session.call("manager/play", {control: false}).then(
+                    function(result){
+                        console.log('rpc res');
+                        console.log(result);
+                        window.game.channel = "game/"+result.game_id;
+                        session.subscribe(window.game.channel, function (uri, payload){
+                            console.log("rec msg");
+                            console.log(payload);
+                            if (typeof payload.event != 'undefined') {
+                                window.game.handleServerEvent(payload.event);
+                            }
+                        });
+
+                    },function(error, desc){
+                        console.log("RPC Error", error, desc);
+                    });
+        });
+
+        window.game.websocket.on("socket/disconnect", function(error){
+            //error provides us with some insight into the disconnection: error.reason and error.code
+            displayNotification('Server Disconnected.');
+            console.log("Disconnected for " + error.reason + " with code " + error.code);
+        });
+    </script>
+    <textarea id="game-out" style="width: 100%;height:500px" readonly></textarea>
+{% endblock %}

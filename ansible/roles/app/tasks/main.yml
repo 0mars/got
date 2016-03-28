@@ -1,0 +1,10 @@
+---
+# application tasks to be customized and to run after the main provision
+- name: Vendor | Install
+  shell: "cd /vagrant && composer install"
+
+- name: Assets | Install
+  shell: "cd /vagrant && app/console assets:install"
+
+- name: Assetic | Dump
+  shell: "cd /vagrant && app/console assetic:dump"

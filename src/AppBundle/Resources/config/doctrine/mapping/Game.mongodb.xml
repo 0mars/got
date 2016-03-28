@@ -1,0 +1,19 @@
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                    http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+
+    <document name="GameOThree\Core\Model\Game" collection="game">
+        <field fieldName="id" id="true" />
+        <field fieldName="player1" type="string" />
+        <field fieldName="player2" type="string" />
+        <field fieldName="startValue" type="integer" />
+        <field fieldName="currentValue" type="integer" />
+        <field fieldName="result" type="integer" />
+        <field fieldName="winner" type="integer" />
+        <field fieldName="lastInput" type="integer" />
+        <field fieldName="status" type="integer" />
+        <field fieldName="lastUpdate" type="date" />
+        <field fieldName="lastUpdate" type="date" />
+    </document>
+</doctrine-mongo-mapping>
