@@ -38,6 +38,17 @@ class GameRepository implements GameRepositoryInterface
         return $res;
     }
 
+    /**
+     * @return mixed:Game|null
+     */
+    public function findUncontrolledOpenGame()
+    {
+        $res = $this->objectManager->getRepository(Game::class)->findOneBy(
+            ['status' => Game::STATUS_OPEN, 'controller'=> null]
+        );
+        return $res;
+    }
+
     public function findById($id)
     {
         return $this->objectManager->getRepository(Game::class)->findOneById($id);

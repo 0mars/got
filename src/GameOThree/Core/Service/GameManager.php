@@ -5,6 +5,7 @@
 namespace GameOThree\Core\Service;
 
 use GameOThree\Core\Model\Game;
+use GameOThree\Core\Model\Player;
 use GameOThree\Core\Repository\GameRepositoryInterface;
 
 /**
@@ -30,17 +31,23 @@ class GameManager
 
     /**
      * Search for an open game, if found join, if not create
-     *
-     * @param string $playerId
+     * @param $playerId
+     * @param bool $human
      * @return Game
      */
-    public function joinGame($playerId) {
-        $game = $this->gameRepository->findOpenGame();
+    public function joinGame($playerId, $human = false) {
+        if ($human) {
+            $game = $this->gameRepository->findUncontrolledOpenGame();
+        } else {
+            $game = $this->gameRepository->findOpenGame();
+        }
+
+        $player = new Player($playerId, $human);
 
         if (!$game) {
-            $game = $this->createGame($playerId);
+            $game = $this->createGame($player);
         } else {
-            $game->join($playerId);
+            $game->join($player);
             $this->gameRepository->save($game);
         }
         return $game;
@@ -60,12 +67,12 @@ class GameManager
     }
 
     /**
-     * @param string $playerId
+     * @param string $player
      * @return Game
      */
-    private function createGame($playerId)
+    private function createGame($player)
     {
-        $game = new Game($playerId);
+        $game = new Game($player);
         $this->gameRepository->save($game);
         return $game;
     }
@@ -91,6 +98,24 @@ class GameManager
     {
         $game = $this->gameRepository->findById($gameId);
         $currentValue = $game->calculateResult($playerId);
+        return [
+            $game->getLastInput(),
+            $currentValue
+        ];
+    }
+
+    /**
+     * @param $gameId
+     * @param $playerId
+     * @param $answer
+     * @return array
+     * @throws \GameOThree\Core\Exception\IllegalOperationException
+     * @throws \GameOThree\Core\Exception\IncorrectAnswerException
+     */
+    public function submitAnswer($gameId, $playerId, $answer)
+    {
+        $game = $this->gameRepository->findById($gameId);
+        $currentValue = $game->submitAnswer($playerId, $answer);
         return [
             $game->getLastInput(),
             $currentValue

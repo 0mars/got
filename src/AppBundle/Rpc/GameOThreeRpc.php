@@ -55,8 +55,10 @@ class GameOThreeRpc implements RpcInterface
      */
     public function play(ConnectionInterface $connection, WampRequest $request, $params)
     {
-        $game = $this->gameManager->joinGame($connection->WAMP->sessionId);
-//        $this->logger->info($game->getId());
+        var_dump($params);
+        $this->logger->info('trying to RPC call');
+        $game = $this->gameManager->joinGame($connection->WAMP->sessionId, $params['control']);
+
         return array("game_id" => $game->getId(), 'status'=> $game->getStatus());
     }
 }

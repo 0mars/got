@@ -8,7 +8,8 @@
     <script type="text/javascript">
         window.game = {
             WS_URI: "ws://{{ gos_web_socket_server_host }}:{{ gos_web_socket_server_port }}",
-            channel: ""
+            channel: "",
+            session: {}
         };
         window.game.websocket = WS.connect(window.game.WS_URI, {"max_retries": 0});
         function displayNotification(message) {
@@ -16,13 +17,15 @@
         }
         window.game.handleServerEvent = function(event)
         {
-            console.log('event');
-            console.log(event);
+            console.log(event.name);
             switch (event.name) {
                 case 'winner':
-                        displayNotification("The winner is... *Drum Roll* Player "+ event.player);
+                    displayNotification("The winner is... *Drum Roll* Player "+ event.player);
                     break;
-                case 'game_concluded':
+                case 'answer_needed':
+                        var answer = prompt("Please choose an answer, such that "
+                                +"the resulting number would be divisible by 3, Valid Answers are [-1, 0, 1]");
+                        window.game.session.publish(window.game.channel,{"event": {name: "ack", answer: answer}});
                     break;
                 case 'game_started':
                     displayNotification("Game Started, Start Value: "+event.value);
@@ -41,14 +44,16 @@
         window.game.websocket.on("socket/connect", function (session){
             window.game.session = session;
             displayNotification("Connected to server");
-            session.call("manager/play", {control: false}).then(
+        });
+
+        function play(control) {
+            $('#control-btns').hide();
+            window.game.session.call("manager/play", {control: control}).then(
                     function(result){
                         console.log('rpc res');
                         console.log(result);
                         window.game.channel = "game/"+result.game_id;
-                        session.subscribe(window.game.channel, function (uri, payload){
-                            console.log("rec msg");
-                            console.log(payload);
+                        window.game.session.subscribe(window.game.channel, function (uri, payload){
                             if (typeof payload.event != 'undefined') {
                                 window.game.handleServerEvent(payload.event);
                             }
@@ -57,7 +62,12 @@
                     },function(error, desc){
                         console.log("RPC Error", error, desc);
                     });
+        }
+        $(document).ready(function(){
+            $('#play').click(function(){play(false)});
+            $('#play-human').click(function(){play(true)});
         });
+
 
         window.game.websocket.on("socket/disconnect", function(error){
             //error provides us with some insight into the disconnection: error.reason and error.code
@@ -66,4 +76,16 @@
         });
     </script>
     <textarea id="game-out" style="width: 100%;height:500px" readonly></textarea>
+<div id="control-btns">
+    <button id="play">Play</button>
+    <button id="play-human">Play as Human</button>
+    </div>
+
+    {#
+    <div id="control-btns">
+        <button id="neg" value="-1"></button>
+        <button id="pos" value="1"></button>
+        <button id="zero" value="0"></button>
+    </div>
+    #}
 {% endblock %}

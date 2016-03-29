@@ -1,0 +1,10 @@
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
+                    http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+
+    <document name="GameOThree\Core\Model\Player" collection="player">
+        <field fieldName="id" id="true" strategy="NONE" type="string" />
+        <field fieldName="human" type="boolean" />
+    </document>
+</doctrine-mongo-mapping>

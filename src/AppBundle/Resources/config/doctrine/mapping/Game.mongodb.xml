@@ -5,8 +5,9 @@
 
     <document name="GameOThree\Core\Model\Game" collection="game">
         <field fieldName="id" id="true" />
-        <field fieldName="player1" type="string" />
-        <field fieldName="player2" type="string" />
+        <embed-one field="player1" target-document="Player" />
+        <embed-one field="player2" target-document="Player" />
+        <embed-one field="controller" target-document="Player" />
         <field fieldName="startValue" type="integer" />
         <field fieldName="currentValue" type="integer" />
         <field fieldName="result" type="integer" />

@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Topic;
 
+use GameOThree\Core\Exception\IncorrectAnswerException;
 use GameOThree\Core\Service\GameManager;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
@@ -58,8 +59,7 @@ class GameOThreeTopic implements TopicInterface
             $topic->broadcast($readyEvent);
             $topic->broadcast(['msg' => "game in progress"]);
             $topic->broadcast(
-                ['event' => ['name' => 'ack_start']],
-                [],
+                ['event' => ['name' => $game->getController() == $game->getOtherPlayerById($connection->WAMP->sessionId)?'answer_needed':'ack_start']],
                 [$connection->WAMP->sessionId]
             );
         } else {
@@ -118,10 +118,37 @@ class GameOThreeTopic implements TopicInterface
         array $eligible
     ) {
         $topic->broadcast("S - rec msg from :" . $connection->WAMP->sessionId);
+        var_dump($event);
+        $playerId = $connection->WAMP->sessionId;
         if (isset($event['event']['name']) && $event['event']['name'] == 'ack') {
-            sleep(mt_rand(1, 5));
-            list($input, $value) = $this->gameManager->processTurn($this->getGameId($topic), $connection->WAMP->sessionId);
-            $player = $this->gameManager->getGame($this->getGameId($topic))->getPlayerNumber($connection->WAMP->sessionId);
+            sleep(mt_rand(1, 2));
+
+            $game = $this->gameManager->getGame($this->getGameId($topic));
+            $player = $game->getPlayerById($playerId);
+            $otherPlayer = $game->getOtherPlayerById($playerId);
+
+            if ($player->isHuman() && $player == $game->getController() && isset($event['event']['answer'])) {
+                try {
+                    list($input, $value) = $this->gameManager->submitAnswer($this->getGameId($topic), $playerId, (int)$event['event']['answer']);
+                } catch (IncorrectAnswerException $e) {
+                    var_dump($event);
+                    $topic->broadcast(
+                        [
+                            'event' => [
+                                'name' => 'answer_needed',
+                            ]
+                        ], [] ,[$connection->WAMP->sessionId]
+                    );
+                    return;
+                }
+
+            } else {
+                list($input, $value) = $this->gameManager->processTurn($this->getGameId($topic), $playerId);
+            }
+
+
+            $game = $this->gameManager->getGame($this->getGameId($topic));
+            $player = $game->getPlayerNumber($connection->WAMP->sessionId);
             $topic->broadcast(
                 [
                     'event' => [
@@ -133,7 +160,6 @@ class GameOThreeTopic implements TopicInterface
                 ]
             );
             if ($value == 1) {
-                // @todo
                 $topic->broadcast(
                     [
                         'event' => [
@@ -145,14 +171,15 @@ class GameOThreeTopic implements TopicInterface
                     ]
                 );
             } else {
+
                 $topic->broadcast(
                     [
                         'event' => [
-                            'name' => 'ack_continue',
+                            'name' => !$otherPlayer->isHuman() ? 'ack_continue' :'answer_needed',
                             'input' => $input,
                             'value' => $value
                         ]
-                    ], [$connection->WAMP->sessionId]
+                    ], [],[$otherPlayer->getId()]
                 );
             }
         }
