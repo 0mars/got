@@ -48,6 +48,7 @@ Vagrant.configure("2") do |config|
             ansible.inventory_path = "ansible/inventories/dev"
             ansible.limit = 'all'
         end
+        config.vm.provision :shell, path: "socket_start.sh", args: ["default"]
     else
         config.vm.provision :shell, path: "ansible/windows.sh", args: ["default"]
     end

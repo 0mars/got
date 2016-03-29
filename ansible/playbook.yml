@@ -4,14 +4,11 @@
   vars_files:
     - vars/all.yml
   roles:
-#    - server
-#    - vagrant_local
-#    - nginx
-#    - mysql
-#    - mongodb
     - swap
+    - server
+    - vagrant_local
+    - nginx
+    - mongodb
     - php
     - composer
     - app
-#    - rabbitmq
-    - socket_server
