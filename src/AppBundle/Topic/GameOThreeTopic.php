@@ -8,7 +8,6 @@ use Ratchet\Wamp\Topic;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 /**
- * Class GameOThreeTopic
  * @package AppBundle\Topic
  * @author Omar Shaban <omars@php.net>
  */
@@ -20,7 +19,6 @@ class GameOThreeTopic implements TopicInterface
     private $gameManager;
 
     /**
-     * GameOThreeTopic constructor.
      * @param GameManager $gameManager
      */
     public function __construct(GameManager $gameManager)
@@ -28,6 +26,9 @@ class GameOThreeTopic implements TopicInterface
         $this->gameManager = $gameManager;
     }
 
+    /**
+     * @param string $msg
+     */
     private function log($msg)
     {
         echo date('Y-m-d H:i:s') . ': ' . $msg . PHP_EOL;
@@ -39,7 +40,6 @@ class GameOThreeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
-     * @return void
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
@@ -69,7 +69,6 @@ class GameOThreeTopic implements TopicInterface
             );
         }
         $topic->broadcast(['msg' => "total players on this topic: " . count($topic)]);
-//        $topic->broadcast(["msg" => 'secret: ' . $connection->WAMP->sessionId], [$connection->WAMP->sessionId]);
     }
 
     /**
@@ -78,7 +77,6 @@ class GameOThreeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
-     * @return void
      */
     public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
@@ -89,7 +87,11 @@ class GameOThreeTopic implements TopicInterface
         }
     }
 
-    public function notify($topic, $message)
+    /**
+     * @param Topic $topic
+     * @param string $message
+     */
+    public function notify(Topic $topic, $message)
     {
         $topic->broadcast(
             [
@@ -105,7 +107,7 @@ class GameOThreeTopic implements TopicInterface
      * @param ConnectionInterface $connection
      * @param Topic $topic
      * @param WampRequest $request
-     * @param $event
+     * @param array $event
      * @param array $exclude
      * @param array $eligible
      */
@@ -113,7 +115,7 @@ class GameOThreeTopic implements TopicInterface
         ConnectionInterface $connection,
         Topic $topic,
         WampRequest $request,
-        $event,
+        array $event,
         array $exclude,
         array $eligible
     ) {
@@ -133,7 +135,6 @@ class GameOThreeTopic implements TopicInterface
                 ]
             );
             if ($value == 1) {
-                // @todo
                 $topic->broadcast(
                     [
                         'event' => [

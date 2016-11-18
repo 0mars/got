@@ -1,7 +1,5 @@
 <?php
-/**
- * Created at 23/03/16 18:22
- */
+
 namespace AppBundle\Rpc;
 
 use GameOThree\Core\Service\GameManager;
@@ -29,7 +27,6 @@ class GameOThreeRpc implements RpcInterface
     protected $gameManager;
 
     /**
-     * GameOThreeRpc constructor.
      * @param LoggerInterface $logger
      * @param GameManager $gameManager
      */
@@ -56,7 +53,6 @@ class GameOThreeRpc implements RpcInterface
     public function play(ConnectionInterface $connection, WampRequest $request, $params)
     {
         $game = $this->gameManager->joinGame($connection->WAMP->sessionId);
-//        $this->logger->info($game->getId());
         return array("game_id" => $game->getId(), 'status'=> $game->getStatus());
     }
 }

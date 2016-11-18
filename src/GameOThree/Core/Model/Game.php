@@ -48,11 +48,6 @@ class Game implements GameInterface
     /**
      * @var int
      */
-    private $result;
-
-    /**
-     * @var int
-     */
     private $status = self::STATUS_OPEN;
 
     /**
@@ -77,7 +72,7 @@ class Game implements GameInterface
 
     /**
      * Game constructor.
-     * @param $player1
+     * @param string $player1
      */
     public function __construct($player1)
     {
@@ -173,6 +168,9 @@ class Game implements GameInterface
         return $this->currentValue;
     }
 
+    /**
+     * @return int
+     */
     public function getWinner()
     {
         return $this->winner;
@@ -242,6 +240,9 @@ class Game implements GameInterface
         return $this->id;
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getStartedAt()
     {
         return $this->startedAt;

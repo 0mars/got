@@ -1,7 +1,5 @@
 <?php
-/**
- * Created at 28/03/16 15:46
- */
+
 namespace AppBundle\Event;
 
 /**
@@ -14,11 +12,18 @@ class NotificationEvent
     public $message;
     public $name;
 
+    /**
+     * NotificationEvent constructor.
+     * @param string $message
+     */
     public function __construct($message)
     {
         $this->message = $message;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return [

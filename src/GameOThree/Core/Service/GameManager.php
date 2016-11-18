@@ -6,6 +6,7 @@ namespace GameOThree\Core\Service;
 
 use GameOThree\Core\Model\Game;
 use GameOThree\Core\Repository\GameRepositoryInterface;
+use GameOThree\Core\Exception\IllegalOperationException;
 
 /**
  * Class GameManager
@@ -49,7 +50,7 @@ class GameManager
     /**
      * @param string $gameId
      * @return Game
-     * @throws \GameOThree\Core\Exception\IllegalOperationException
+     * @throws IllegalOperationException
      */
     public function start($gameId)
     {
@@ -97,6 +98,10 @@ class GameManager
         ];
     }
 
+    /**
+     * @param string $gameId
+     * @return Game
+     */
     public function getGame($gameId)
     {
         return $this->gameRepository->findById($gameId);

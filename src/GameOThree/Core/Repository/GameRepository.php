@@ -30,7 +30,7 @@ class GameRepository implements GameRepositoryInterface
     }
 
     /**
-     * @return mixed:Game|null
+     * {@inheritDoc}
      */
     public function findOpenGame()
     {
@@ -38,13 +38,16 @@ class GameRepository implements GameRepositoryInterface
         return $res;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function findById($id)
     {
         return $this->objectManager->getRepository(Game::class)->findOneById($id);
     }
 
     /**
-     * @param Game $game
+     * {@inheritDoc}
      */
     public function save(Game $game)
     {

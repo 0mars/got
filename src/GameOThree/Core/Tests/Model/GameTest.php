@@ -59,7 +59,7 @@ class GameTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException GameOThree\Core\Exception\IllegalOperationException
+     * @expectedException \GameOThree\Core\Exception\IllegalOperationException
      */
     public function startException()
     {
