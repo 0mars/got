@@ -11,10 +11,21 @@ namespace GameOThree\Core\Model;
  */
 class Player
 {
+    /**
+     * @var string
+     */
     private $id;
 
+    /**
+     * @var bool
+     */
     private $human = false;
 
+    /**
+     * Player constructor.
+     * @param string $id
+     * @param bool $human
+     */
     public function __construct($id, $human = false)
     {
         $this->id = $id;
@@ -22,7 +33,7 @@ class Player
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId()
     {
@@ -30,13 +41,16 @@ class Player
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isHuman()
     {
         return $this->human;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->id;

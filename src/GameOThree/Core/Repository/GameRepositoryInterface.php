@@ -15,6 +15,11 @@ interface GameRepositoryInterface
     public function findOpenGame();
 
     /**
+     * @return Game
+     */
+    public function findUncontrolledOpenGame();
+
+    /**
      * @param string $id
      * @return Game
      */

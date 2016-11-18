@@ -7,6 +7,8 @@ namespace GameOThree\Core\Service;
 use GameOThree\Core\Model\Game;
 use GameOThree\Core\Model\Player;
 use GameOThree\Core\Repository\GameRepositoryInterface;
+use GameOThree\Core\Exception\IllegalOperationException;
+use GameOThree\Core\Exception\IncorrectAnswerException;
 
 /**
  * Class GameManager
@@ -33,6 +35,7 @@ class GameManager
      * Search for an open game, if found join, if not create
      * @param $playerId
      * @param bool $human
+     *
      * @return Game
      */
     public function joinGame($playerId, $human = false) {
@@ -55,8 +58,10 @@ class GameManager
 
     /**
      * @param string $gameId
+     *
      * @return Game
-     * @throws \GameOThree\Core\Exception\IllegalOperationException
+     *
+     * @throws IllegalOperationException
      */
     public function start($gameId)
     {
@@ -67,10 +72,10 @@ class GameManager
     }
 
     /**
-     * @param string $player
+     * @param Player $player
      * @return Game
      */
-    private function createGame($player)
+    private function createGame(Player $player)
     {
         $game = new Game($player);
         $this->gameRepository->save($game);
@@ -79,6 +84,7 @@ class GameManager
 
     /**
      * @param string $gameId
+     *
      * @return Game
      */
     public function disconnect($gameId)
@@ -92,6 +98,7 @@ class GameManager
     /**
      * @param string $gameId
      * @param string $playerId
+     *
      * @return array
      */
     public function processTurn($gameId, $playerId)
@@ -108,9 +115,11 @@ class GameManager
      * @param $gameId
      * @param $playerId
      * @param $answer
+     *
      * @return array
-     * @throws \GameOThree\Core\Exception\IllegalOperationException
-     * @throws \GameOThree\Core\Exception\IncorrectAnswerException
+     *
+     * @throws IllegalOperationException
+     * @throws IncorrectAnswerException
      */
     public function submitAnswer($gameId, $playerId, $answer)
     {
@@ -122,6 +131,11 @@ class GameManager
         ];
     }
 
+    /**
+     * @param string $gameId
+     *
+     * @return Game
+     */
     public function getGame($gameId)
     {
         return $this->gameRepository->findById($gameId);

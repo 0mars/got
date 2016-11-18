@@ -29,9 +29,12 @@ class GameOThreeTopic implements TopicInterface
         $this->gameManager = $gameManager;
     }
 
-    private function log($msg)
+    /**
+     * @param string $message
+     */
+    private function log($message)
     {
-        echo date('Y-m-d H:i:s') . ': ' . $msg . PHP_EOL;
+        echo date('Y-m-d H:i:s') . ': ' . $message . PHP_EOL;
     }
 
     /**
@@ -69,7 +72,6 @@ class GameOThreeTopic implements TopicInterface
             );
         }
         $topic->broadcast(['msg' => "total players on this topic: " . count($topic)]);
-//        $topic->broadcast(["msg" => 'secret: ' . $connection->WAMP->sessionId], [$connection->WAMP->sessionId]);
     }
 
     /**
@@ -89,7 +91,11 @@ class GameOThreeTopic implements TopicInterface
         }
     }
 
-    public function notify($topic, $message)
+    /**
+     * @param Topic $topic
+     * @param string $message
+     */
+    public function notify(Topic $topic, $message)
     {
         $topic->broadcast(
             [
@@ -118,7 +124,6 @@ class GameOThreeTopic implements TopicInterface
         array $eligible
     ) {
         $topic->broadcast("S - rec msg from :" . $connection->WAMP->sessionId);
-        var_dump($event);
         $playerId = $connection->WAMP->sessionId;
         if (isset($event['event']['name']) && $event['event']['name'] == 'ack') {
             sleep(mt_rand(1, 2));

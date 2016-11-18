@@ -16,7 +16,7 @@ class GameTest extends \PHPUnit_Framework_TestCase
      */
     public function create()
     {
-        $player1 = 'MyPlayerID';
+        $player1 = new Player('MyPlayerID');
         $game = new Game($player1);
         $this->assertSame($player1, $game->getPlayer1());
         $this->assertSame(Game::STATUS_OPEN,$game->getStatus());
